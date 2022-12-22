@@ -1,4 +1,4 @@
-module ShivamTripathi21/Go
+module github.com/ShivamTripathi21/Go
 
 go 1.19
 
