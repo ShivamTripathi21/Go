@@ -1,4 +1,4 @@
-module example/hello
+module ShivamTripathi21/Go
 
 go 1.19
 
