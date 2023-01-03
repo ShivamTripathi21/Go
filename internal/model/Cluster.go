@@ -1,11 +1,11 @@
 package model
 
 import (
-	"runtime"
 	"time"
 
 	"github.com/Microsoft/go-winio/pkg/guid"
 	"github.com/docker/docker/api/types"
+	"github.com/google/uuid"
 )
 
 // OSInfo Operating system info
@@ -20,7 +20,7 @@ type DockerInfo struct {
 }
 
 type ClusterInfo struct {
-	ClusterID                     guid.GUID
+	ClusterID                     uuid.UUID
 	ClusterName                   string
 	ClusterType                   *ClusterType
 	ClusterROMSize                int
@@ -45,8 +45,8 @@ type ClusterInfo struct {
 }
 
 type Pie struct {
-	PieID                    guid.GUID
-	PieOwnerID               guid.GUID
+	PieID                    uuid.UUID
+	PieOwnerID               uuid.UUID
 	ClusterInoframtion       *ClusterInfo //pointer type because we can chage few Cluster info from the Pie, like Sizes.
 	PieMaxROMSize            int
 	PieMaxRAMSize            int
@@ -62,15 +62,15 @@ type Pie struct {
 	MaxNumberOfContainers    int
 	TotalNumberOfContainer   int
 	TotalNumberOfUPContainer int
-	PieCreatedByID           guid.GUID
+	PieCreatedByID           uuid.UUID
 	PieCreatedTime           time.Time
 }
 
 type ContainerInfo struct {
-	ContainerID          guid.GUID
+	ContainerID          uuid.UUID
 	ContainerOwnerIDs    []int32
 	DockerInfo           *DockerInfo
-	PieID                guid.GUID
+	PieID                uuid.UUID
 	DockerImageInfo      *DockerImageInfo
 	ContainerUrl         string
 	ContainerServicePort int
@@ -86,66 +86,4 @@ type ContainerInfo struct {
 type DockerImageInfo struct {
 	DockerImageID    string
 	ImageBuildOption types.ImageBuildOptions
-}
-
-// FactoryConfig config information of run and build
-type FactoryConfig struct {
-	pieInfo       *Pie
-	containerInfo []*ContainerInfo
-}
-
-// scdFunForOSInfo Information about os
-func (FConfig *FactoryConfig) scdFunForClusterType() {
-	os := &ClusterType{}
-
-	gos := runtime.GOOS
-	switch gos {
-	case "windows":
-		os.OsName = "windows"
-	case "darwin":
-		os.OsName = "darwin"
-	case "linux":
-		os.OsName = "linux"
-	default:
-		os.OsName = "nil"
-	}
-	FConfig.pieInfo.ClusterInoframtion.ClusterType = os
-}
-
-// scdFunForDockerInfo Information about docker
-// func (FConfig *FactoryConfig) scdFunForDockerInfo() {
-// 	di := &DockerInfo{}
-
-// 	cmdd := exec.Command("docker", "--version")
-// 	cmddc := exec.Command("docker-compose", "--version")
-
-// 	cmddOutput := &bytes.Buffer{}
-// 	cmddcOutput := &bytes.Buffer{}
-
-// 	cmdd.Stdout = cmddOutput
-// 	cmddc.Stdout = cmddcOutput
-
-// 	errd := cmdd.Run()
-// 	//for docker
-// 	if errd != nil {
-// 		di.Version = "nil"
-// 	} else {
-// 		di.Version = string(cmddOutput.Bytes())
-// 	}
-
-// 	errdc := cmddc.Run()
-// 	//for docker-compose
-// 	if errdc != nil {
-// 		di.ComposeVersion = "nil"
-// 	} else {
-// 		di.ComposeVersion = string(cmddcOutput.Bytes())
-// 	}
-
-// 	FConfig.containerInfo.DockerInfo = di
-// }
-
-// NewFactory intiate the factory for build or run
-func NewFactory() (*FactoryConfig, error) {
-	fconf := &FactoryConfig{}
-	return fconf, nil
 }
